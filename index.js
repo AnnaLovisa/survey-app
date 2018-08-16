@@ -11,7 +11,7 @@ const express = require('express');
 const app = express();
 
 app.get('/', (req, res) => {
-  res.send({ hi: 'there'} );
+  res.send({ name: 'anna'} );
 });
 
 //Whenever Heroku runs our app, it has the ability to inject environment variables, variables that are set in the
