@@ -28,7 +28,8 @@ passport.deserializeUser((id, done) => {
 passport.use(new GoogleStrategy({
   clientID: keys.googleClientID,
   clientSecret: keys.googleClientSecret,
-  callbackURL: '/auth/google/callback'  //The route the user is going to be sent to after they grant permission
+  callbackURL: '/auth/google/callback',  //The route the user is going to be sent to after they grant permission
+  proxy: true
 },(accessToken, refreshToken, profile, done) => {//This is the callback that appears in our node-terminal when we call the GoogleStrategy
   //The accessToken is our opportunity to create a new user to our database that has access to our app in order to make surveys
   //So with the accessToken we can identify the userinformation and save it to our database.
