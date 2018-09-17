@@ -30,30 +30,29 @@ passport.use(new GoogleStrategy({
   clientSecret: keys.googleClientSecret,
   callbackURL: '/auth/google/callback',  //The route the user is going to be sent to after they grant permission
   proxy: true
-},(accessToken, refreshToken, profile, done) => {//This is the callback that appears in our node-terminal when we call the GoogleStrategy
+},
+async (accessToken, refreshToken, profile, done) => {//This is the callback that appears in our node-terminal when we call the GoogleStrategy
   //The accessToken is our opportunity to create a new user to our database that has access to our app in order to make surveys
   //So with the accessToken we can identify the userinformation and save it to our database.
   //The refreshToken allows us to update the accessToken.
     //This line below will check for users that have already signed up before and whose googleId therefore would
     //be the same as the profile.id for the user who signs up
-    User.findOne({ googleId: profile.id })
-      .then((existingUser) => {
-        if(existingUser) {
-          //We already have a user with the given profile ID
-          //Done says that everything is done and here is the existingUser
-          done(null, existingUser);
-        } else {
-          //we don't have a user record with this ID, make a new record!
-          //A new user-instance gets created anytime a user comes back from the google oauth-flow
-          //Create a new user-record who has a googleId as an id that comes from the user's google-profile
-          //.save() will save the record in the database
-          new User({ googleId: profile.id })
-            .save()
-            //In the callback we get another instance
-            //So we always make use of the callback instance, because it might have additional changes to it
-            .then(user => done(null, user));
-        }
-      })
+    const existingUser = await User.findOne({ googleId: profile.id })
+      
+    if(existingUser) {
+      //We already have a user with the given profile ID
+      //Done says that everything is done and here is the existingUser
+      return done(null, existingUser);
+    }
+      //we don't have a user record with this ID, make a new record!
+      //A new user-instance gets created anytime a user comes back from the google oauth-flow
+      //Create a new user-record who has a googleId as an id that comes from the user's google-profile
+      //.save() will save the record in the database
+      const user = await new User({ googleId: profile.id }).save()
+      //In the callback we get another instance
+      //So we always make use of the callback instance, because it might have additional changes to it
+      done(null, user);
+
   })
 );
 

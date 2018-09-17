@@ -5,6 +5,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cookieSession = require('cookie-session');
 const passport = require('passport');
+const bodyParser = require('body-parser');
 const keys = require('./config/keys');
 require('./models/User');
 require('./services/passport');
@@ -19,6 +20,9 @@ mongoose.connect(keys.mongoURI,  { useNewUrlParser: true });
 //routed to the express-side to the app from the node-side and route those requests on to different route-handlers.
 //So all the routes are going to be associated with this app-object
 const app = express();
+//Anytime a PUT, POST or PATCH-request comes into our app, this middleware
+//will parse the body inside the req.body-property of the incoming request-object
+app.use(bodyParser.json());
 //app.use()-calls are referred to as middlewares inside of our application
 //Middlewares are small functions that can modify requests before they are being sent to routehandlers
 //cookieSession is a configurationobject that exprects 2 different objects: maxAge and keys
@@ -37,7 +41,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 //We immediately invoke the app-function by writing like this
 require('./routes/authRoutes')(app); //Here we call the authRoutes with the app-object in module.exports
-
+require('./routes/billingRoutes')(app);
 /*app.get('/', (req, res) => {
   res.send({ name: 'anna'} );
 });*/
