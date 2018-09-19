@@ -3,7 +3,11 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose
 
 const userSchema = new Schema({
-  googleId: String  //This tells the Schema that anttime there is a value on the googleId-property, it will always be a string
+  googleId: String,  //This tells the Schema that anytime there is a value on the googleId-property, it will always be a string
+  credits: {
+    type: Number,
+    default: 0
+  }
 });
 //This is how we create a new model-class with our 'users'-collection and userSchema
 //It will only create a new 'users'-collection if it doesn't already exist
